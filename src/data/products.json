@@ -1,0 +1,16 @@
+[
+    {
+        "id": "143",
+        "title": "Milk",
+        "imgUrl": "https://www2.biomin.net/fileadmin/user_upload/Articles/2019/Boosting_milk_yield/Milk-production-in-heifers-fed-Digestarom-Dairy-increased-by-0.7-kg-per-day.jpg",
+        "description": "Milk (also known in unfermented form as sweet milk) is a nutrient-rich liquid food produced by the mammary glands of mammals. It is the primary source of nutrition for young mammals, including breastfed human infants before they are able to digest solid food.",
+        "price": "18.75"
+    },
+    {
+        "id": "114",
+        "title": "Coffee",
+        "imgUrl": "http://mkcfoodproducts.com/images/products/filter-coffee-powder.jpg",
+        "description": "Instant coffee, also called soluble coffee, coffee crystals, and coffee powder, is a beverage derived from brewed coffee beans",
+        "price": "45.50"
+    }
+]
