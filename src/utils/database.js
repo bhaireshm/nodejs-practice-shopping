@@ -1,18 +1,35 @@
-// const mysql = require("mysql2");
+const mongoose = require("mongoose");
+const User = require("../models/user-model");
+const uri =
+  // "mongodb+srv://bhaireshm:10Vlc0rDCxpQQlKj@cluster0.kple9.mongodb.net/myFirstDatabase?retryWrites=true&w=majority&ssl=true&authSource=admin";
+  "mongodb://localhost:27017/nodejsShopping?serverSelectionTimeoutMS=5000&connectTimeoutMS=10000&3t.uriVersion=3&3t.alwaysShowAuthDB=true&3t.alwaysShowDBFromUserRole=true";
 
-// const pool = mysql.createPool({
-//   host: "localhost",
-//   user: "root",
-//   password: "root",
-//   database: "nodejs-shopping",
-// });
+const mongooseConnect = (cb) => {
+  mongoose
+    .connect(uri, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    })
+    .then((result) => {
+      return User.findOne().then((user) => {
+        if (!user) {
+          const user = new User({
+            name: "Bhairesh",
+            email: "bhaireshmailinator.com",
+            cart: { items: [] },
+          });
+          return user.save();
+        }
+        return user;
+      });
+    })
+    .then((result) => {
+      // console.log(result);
+      cb(result);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+};
 
-// module.exports = pool.promise();
-
-const Sequelize = require("sequelize");
-const sequelize = new Sequelize("nodejs-shopping", "root", "root", {
-  dialect: "mysql",
-  host: "localhost",
-});
-
-module.exports = sequelize;
+module.exports = mongooseConnect;
