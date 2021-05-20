@@ -2,9 +2,15 @@ const path = require("path");
 
 const express = require("express");
 const bodyParser = require("body-parser");
-const mongooseConnect = require("./src/utils/database");
+const session = require("express-session");
+const MongoDBStore = require("connect-mongodb-session")(session);
+const { MONGODB_URI, mongooseConnect } = require("./src/utils/database");
 
 const app = express();
+const store = new MongoDBStore({
+  uri: MONGODB_URI,
+  collection: "sessions",
+});
 
 app.set("view engine", "ejs");
 app.set("views", "./src/views/");
@@ -12,6 +18,7 @@ app.set("views", "./src/views/");
 const adminRoutes = require("./src/routes/admin-route");
 const shopRoutes = require("./src/routes/shop-route");
 const { get404Page } = require("./src/controllers/error-controller");
+const authRoute = require("./src/routes/auth-route");
 const User = require("./src/models/user-model");
 
 app.use(
@@ -20,6 +27,14 @@ app.use(
   })
 );
 app.use(express.static(path.join(__dirname, "./src/public")));
+app.use(
+  session({
+    secret: "some random key",
+    resave: false,
+    saveUninitialized: false,
+    store: store,
+  })
+);
 
 // Passing user details to req
 const userId = "609be413982cf15108afe55b";
@@ -35,6 +50,7 @@ app.use((req, res, next) => {
 // APIs
 app.use("/", shopRoutes);
 app.use("/admin", adminRoutes);
+app.use(authRoute);
 app.use(get404Page);
 
 mongooseConnect(() => {
