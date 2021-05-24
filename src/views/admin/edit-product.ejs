@@ -25,6 +25,7 @@
                 <label for="description">Description</label>
                 <textarea rows='5' name="description" id="description" required ><% if (isEditing) { %><%=product.description%><%}%></textarea>
             </div>
+            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
             <button class="btn" type="submit">
                 <% if(isEditing) { %> Update Product <% } else { %> Add Product <% }%>
             </button>
