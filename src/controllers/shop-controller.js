@@ -9,7 +9,6 @@ exports.getIndex = (req, res, next) => {
         pageTitle: "Shop",
         path: "/",
         hasProducts: products.length > 0,
-        isAuthenticated: req.session.isLoggedIn,
       });
     })
     .catch((err) => {
@@ -25,7 +24,6 @@ exports.getProducts = (req, res, next) => {
         pageTitle: "All Products",
         path: "/products",
         hasProducts: products.length > 0,
-        isAuthenticated: req.session.isLoggedIn,
       });
     })
     .catch((err) => {
@@ -41,7 +39,6 @@ exports.getProduct = (req, res, next) => {
         pageTitle: "Product Details",
         path: "/products",
         product: product,
-        isAuthenticated: req.session.isLoggedIn,
       });
     })
     .catch((err) => console.log(err));
@@ -52,15 +49,11 @@ exports.getCart = (req, res, next) => {
     .populate("cart.items.productId")
     .execPopulate()
     .then((user) => {
-      // console.log("products", user);
-      console.log("cart items", user.cart.items);
-
       const products = user.cart.items;
       res.render("shop/cart", {
         pageTitle: "Your Cart",
         path: "/cart",
         products: products,
-        isAuthenticated: req.session.isLoggedIn,
       });
     })
     .catch((err) => console.log(err));
@@ -85,7 +78,7 @@ exports.deleteProductFromCart = (req, res, next) => {
   req.user
     .removeFromCart(prodId)
     .then((result) => {
-      console.log("products updated in cart", result);
+      // console.log("products updated in cart", result);
       res.redirect("/cart");
     })
     .catch((err) => {
@@ -96,13 +89,10 @@ exports.deleteProductFromCart = (req, res, next) => {
 exports.getOrders = (req, res, next) => {
   Order.find({ "user.id": req.user._id })
     .then((orders) => {
-      console.log("orders", orders);
-      console.log("product", orders.products);
       res.render("shop/orders", {
         pageTitle: "Your Orders",
         path: "/orders",
         orders: orders,
-        isAuthenticated: req.session.isLoggedIn,
       });
     })
     .catch((err) => {
@@ -121,7 +111,7 @@ exports.postOrder = (req, res, next) => {
 
       const order = new Order({
         user: {
-          name: req.user.name,
+          email: req.user.email,
           id: req.user,
         },
         products: products,

@@ -4,3 +4,9 @@
   margin: auto;
   display: block;
 }
+
+.reset-password-link {
+  float: right;
+  font-size: 85%;
+  margin-top: 14px;
+}

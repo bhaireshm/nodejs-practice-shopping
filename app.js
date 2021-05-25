@@ -5,12 +5,15 @@ const bodyParser = require("body-parser");
 const session = require("express-session");
 const MongoDBStore = require("connect-mongodb-session")(session);
 const { MONGODB_URI, mongooseConnect } = require("./src/utils/database");
+const csrf = require("csurf");
+const flash = require("connect-flash");
 
 const app = express();
 const store = new MongoDBStore({
   uri: MONGODB_URI,
   collection: "sessions",
 });
+const csrfProtection = csrf();
 
 app.set("view engine", "ejs");
 app.set("views", "./src/views/");
@@ -36,15 +39,26 @@ app.use(
   })
 );
 
+app.use(csrfProtection);
+app.use(flash());
+
 // Passing user details to req
-const userId = "609be413982cf15108afe55b";
 app.use((req, res, next) => {
-  User.findById(userId)
+  if (!req.session.user) {
+    return next();
+  }
+  User.findById(req.session.user._id)
     .then((user) => {
       req.user = user;
       next();
     })
     .catch((err) => console.log(err));
+});
+
+app.use((req, res, next) => {
+  res.locals.isAuthenticated = req.session.isLoggedIn;
+  res.locals.csrfToken = req.csrfToken();
+  next();
 });
 
 // APIs
